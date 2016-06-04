@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="OatiTests">
+		<parameter name="username" value="test_asu_insp" />
+		<parameter name="password" value="test_asu_insp" />
+		<test name = "OatiTests">
+		<classes>
+			<class name="ru.fors.tests.OatiTests"/>
+		</classes>
+		</test>
+</suite>
