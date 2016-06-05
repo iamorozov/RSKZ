@@ -1,21 +1,20 @@
 package ru.fors.pages;
 
-import java.util.concurrent.TimeUnit;
-
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import ru.fors.utils.PropertyLoader;
 
 public class Page {
 
 	protected WebDriver driver;
+	protected WebDriverWait wait;
 
 	public Page(WebDriver driver) {
 		this.driver = driver;
+		wait = new WebDriverWait(driver, Long.parseLong(PropertyLoader.loadProperty("imp.wait")));
 	}
 	
 	public void type(By element, String string){
@@ -24,41 +23,50 @@ public class Page {
 	}
 	
 	public void click(By element){
+        waitUntilElementPresent(element);
 		driver.findElement(element).click();
 	}
 	
 	public String getElementText(By element){
 		return driver.findElement(element).getText();
 	}
-	
-	public String getUrl(){
-		return driver.getCurrentUrl();
-	}
-	
-	public static Boolean isElementPresent(WebDriver driver, By element) {
-		try {
-			driver.findElement(element);
-			return true;
-		} catch (NoSuchElementException e) {
-			return false;
-		}
 
-	}
-	
-	public static Object waitForElementPresent(WebDriver driver, By locator, int timeout) {
-		try {
-			driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+    public void waitUntilElementPresent(By element){
+        try{
+            wait.until(ExpectedConditions.visibilityOfElementLocated(element));
+            System.out.println(element+" is visible");
+        } catch (Exception e){
+            System.out.println(e);
+        }
+    }
 
-			new WebDriverWait(driver, timeout) {
-			}.until(ExpectedConditions.presenceOfElementLocated(locator));
+    public void waitUntilFrameToBeAvaibleAndSwitchToIt(int element){
+        try{
+            wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(element));
+            System.out.println(element+" is visible and switch");
+        } catch (Exception e){
+            System.out.println(e);
+        }
+    }
 
-			driver.manage().timeouts().implicitlyWait(Long.parseLong(PropertyLoader.loadProperty("imp.wait")), TimeUnit.SECONDS);
+    private static ExpectedCondition<Boolean> waitElementValue(final By element, final String value){
+        return new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                return webDriver.findElement(element).getAttribute("value").contains(value);
+            }
+        };
+    }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    public void waitUntilElementSetValue(By element, String value){
+        try{
+            wait.until(waitElementValue(element, value));
+            System.out.println(element+" has value: " +value);
+        } catch (Exception e){
+            System.out.println(e);
+        }
+    }
+
 
 	
 

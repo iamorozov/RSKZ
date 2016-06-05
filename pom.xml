@@ -68,7 +68,7 @@
 				<site.url>https://suefk.roskazna.ru:8443/sm934</site.url>
 				<imp.wait>30</imp.wait>
 				<browser.name>chrome</browser.name>
-				<suites>oati</suites>
+				<suites>test</suites>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
