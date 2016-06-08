@@ -28,6 +28,7 @@ public class Page {
 	}
 	
 	public String getElementText(By element){
+        waitUntilElementPresent(element);
 		return driver.findElement(element).getText();
 	}
 

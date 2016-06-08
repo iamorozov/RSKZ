@@ -28,6 +28,7 @@ public class MainPage extends Page{
     private By incidentDiagnosticLink = By.linkText("диагностика инцидента");
     private By commentField = By.id("X11");
     private By saveIncidentButton = By.xpath("//button[text()='Готово']");
+    private By firsRowInTable = By.xpath("//tbody[@role='presentation']//td[2]/div");
 
     public void waitUntilMainPageLoaded(){
         wait.until(ExpectedConditions.visibilityOfElementLocated(infopanelMenu));
@@ -116,5 +117,13 @@ public class MainPage extends Page{
     private void userClickSaveIncidentButton(){
         click(saveIncidentButton);
         waitUntilElementPresent(saveButton);
+    }
+
+    public void getAndClickIncidentNumber(){
+        waitUntilFrameToBeAvaibleAndSwitchToIt(0);
+        System.out.println("Next incident: "+getElementText(firsRowInTable));
+        click(firsRowInTable);
+        switchToParentFrame();
+        waitUntilFrameToBeAvaibleAndSwitchToIt(1);
     }
 }
