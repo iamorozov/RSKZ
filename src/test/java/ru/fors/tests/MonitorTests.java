@@ -20,17 +20,13 @@ public class MonitorTests extends TestBase {
         mainPage.waitUntilMainPageLoaded();
         mainPage.userClickInfopanelMenu();
         mainPage.userClickSearchScript();
-        int i=0;
-        while (i<10){
-            System.out.println("Current iteration: "+i);
-            mainPage.userChangeStatus();
-            mainPage.switchToParentFrame();
-            mainPage.userSaveIncident();
-            mainPage.userSetIncidentToInWork();
-            mainPage.getAndClickIncidentNumber();
-            i++;
-        }
-
+        while (mainPage.isIncidentExist()==true){
+                mainPage.getAndClickIncidentNumber();
+                mainPage.userChangeStatus();
+                mainPage.switchToParentFrame();
+                mainPage.userSaveIncident();
+                mainPage.userSetIncidentToInWork();
+                            }
         mainPage.userLogout();
 	}
 	

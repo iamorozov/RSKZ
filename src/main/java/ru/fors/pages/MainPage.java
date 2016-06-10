@@ -120,10 +120,25 @@ public class MainPage extends Page{
     }
 
     public void getAndClickIncidentNumber(){
-        waitUntilFrameToBeAvaibleAndSwitchToIt(0);
+        //waitUntilFrameToBeAvaibleAndSwitchToIt(0);
         System.out.println("Next incident: "+getElementText(firsRowInTable));
         click(firsRowInTable);
         switchToParentFrame();
         waitUntilFrameToBeAvaibleAndSwitchToIt(1);
     }
+
+    public boolean isIncidentExist(){
+        waitUntilFrameToBeAvaibleAndSwitchToIt(0);
+        try{
+            wait.until(ExpectedConditions.presenceOfElementLocated(firsRowInTable));
+            //waitUntilFrameToBeAvaibleAndSwitchToIt(1);
+            return true;
+        }catch (Exception e){
+            //waitUntilFrameToBeAvaibleAndSwitchToIt(1);
+            return false;
+        }
+
+    }
+
+
 }
