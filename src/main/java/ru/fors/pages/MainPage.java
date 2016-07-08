@@ -83,8 +83,8 @@ public class MainPage extends Page {
         userClickInWorkStatus();
         waitUntilElementSetValue(statusField, "В работе");
     }
-	
-	public void changeActivity(String activityText) {
+
+    public void changeActivity(String activityText) {
         type(activityField, activityText);
     }
 
