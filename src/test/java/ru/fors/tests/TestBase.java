@@ -17,34 +17,35 @@ import ru.fors.utils.PropertyLoader;
 import ru.fors.utils.WebDriverFactory;
 
 public class TestBase {
-	
-	protected WebDriver driver;
-	public String baseUrl;
-	
-	@BeforeTest
-	public void init(){
-		baseUrl = PropertyLoader.loadProperty("site.url");
-		Browser browser = new Browser();
-		browser.setName(PropertyLoader.loadProperty("browser.name"));
-		driver = WebDriverFactory.getInstance(browser);
-		driver.manage().window().maximize();
-		driver.get(baseUrl);
-		
-	}
-	
-	public void takeScreenShot(String testName) throws IOException { 
-    	File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE); 
-    	FileUtils.copyFile(scrFile, new File("target/" + "screenshot_" + testName + ".png")); 
-    	} 
+
+    protected WebDriver driver;
+    public String baseUrl;
+
+    @BeforeTest
+    public void init() {
+        baseUrl = PropertyLoader.loadProperty("site.url");
+        Browser browser = new Browser();
+        browser.setName(PropertyLoader.loadProperty("browser.name"));
+        driver = new WebDriverFactory("C:\\Users\\Morozov Ivan\\AppData\\Local\\Google\\Chrome\\Application\\chromedriver.exe")
+                .getInstance(browser);
+        driver.manage().window().maximize();
+        driver.get(baseUrl);
+
+    }
+
+    public void takeScreenShot(String testName) throws IOException {
+        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(scrFile, new File("target/" + "screenshot_" + testName + ".png"));
+    }
 
 
-	@AfterMethod  
-	public void afterMethod(ITestResult result) throws IOException{
-		String testName = result.getName();
-		if (result.getStatus() == ITestResult.FAILURE){
-		takeScreenShot(testName);
-			};
-		driver.quit();
-	}
+    @AfterMethod
+    public void afterMethod(ITestResult result) throws IOException {
+        String testName = result.getName();
+        if (result.getStatus() == ITestResult.FAILURE) {
+            takeScreenShot(testName);
+        }
+        driver.quit();
+    }
 
 }
