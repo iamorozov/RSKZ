@@ -21,6 +21,7 @@ public class MainPage extends Page {
     private By inWaitButton = By.xpath("//button[text()='В ожидание']");
     private By returnBackButton = By.xpath("//button[text()='Возврат оператору']");
     private By statusField = By.id("X3");
+	private By activityField = By.id("X37");
     private By logoutButton = By.linkText("Выход");
     private By loginAgainLink = By.id("loginAgain");
     private By moreIconButton = By.cssSelector("button[class*='more-icon']");
@@ -78,7 +79,11 @@ public class MainPage extends Page {
         waitUntilFrameToBeAvaibleAndSwitchToIt(1);
         userClickComboUpButton();
         userClickInWorkStatus();
-        //waitUntilElementSetValue(statusField, "В работе");
+        waitUntilElementSetValue(statusField, "В работе");
+    }
+	
+	public void changeActivity(String activityText) {
+        type(activityField, activityText);
     }
 
     public void userSaveIncident() {
