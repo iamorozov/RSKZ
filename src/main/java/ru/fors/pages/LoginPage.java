@@ -6,37 +6,38 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class LoginPage extends Page {
 
-	public LoginPage(WebDriver driver) {
-		super(driver);
-	}
+    public LoginPage(WebDriver driver) {
+        super(driver);
+    }
 
-	private By usernameField = By.id("LoginUsername");
-	private By passwordField = By.id("LoginPassword");
-	private By enterButton = By.id("loginBtn");
+    private By usernameField = By.id("LoginUsername");
+    private By passwordField = By.id("LoginPassword");
+    private By enterButton = By.id("loginBtn");
 
-	public void waitForLoginPageLoaded(){
+    public void waitForLoginPageLoaded() {
         wait.until(ExpectedConditions.visibilityOfElementLocated(enterButton));
     }
-    private void userTypeUsername(String username){
-		click(usernameField);
-		type(usernameField, username);
-	}
 
-	private void userTypePassword(String password){
-		click(passwordField);
-		type(passwordField, password);
-	}
+    private void userTypeUsername(String username) {
+        click(usernameField);
+        type(usernameField, username);
+    }
 
-	private void userClickEnterButton(){
-		click(enterButton);
-	}
+    private void userTypePassword(String password) {
+        click(passwordField);
+        type(passwordField, password);
+    }
 
-	public MainPage userLogin(String username, String password){
-		userTypeUsername(username);
-		userTypePassword(password);
-		userClickEnterButton();
-		return new MainPage(driver);
-	}
+    private void userClickEnterButton() {
+        click(enterButton);
+    }
+
+    public MainPage userLogin(String username, String password) {
+        userTypeUsername(username);
+        userTypePassword(password);
+        userClickEnterButton();
+        return new MainPage(driver);
+    }
 
 
 }
