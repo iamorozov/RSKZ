@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
+import ru.fors.pages.User;
 
 import java.io.File;
 import java.io.SyncFailedException;
@@ -113,18 +114,24 @@ public class MainPane extends GridPane {
         setColumnSpan(runButton, 2);
         setHalignment(runButton, HPos.CENTER);
         runButton.setOnAction(e -> {
-            checkField(usernameTextField);
-            checkField(passwordField);
-            checkField(chromeDriverPath);
-            checkField(representationTextField);
+            if (checkField(usernameTextField) &&
+                    checkField(passwordField) &&
+                    checkField(chromeDriverPath) &&
+                    checkField(representationTextField)) {
+                new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
+                        representationTextField.getText()).startWork();
+            }
         });
     }
 
-    private void checkField(TextField field) {
-        if (field.getText().isEmpty())
+    private boolean checkField(TextField field) {
+        if (field.getText().isEmpty()) {
             field.setStyle("-fx-border-color: red");
-        else
+            return false;
+        } else {
             field.setStyle("-fx-border-color: inherit");
+            return true;
+        }
     }
 
     private void setColumns() {
