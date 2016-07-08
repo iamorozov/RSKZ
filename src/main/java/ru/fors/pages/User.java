@@ -25,7 +25,7 @@ public class User {
         this.representation = representation;
     }
 
-    public void startWork() {
+    public void startWork() throws LoginException {
 
         String baseUrl = PropertyLoader.loadProperty("site.url");
         Browser browser = new Browser();
