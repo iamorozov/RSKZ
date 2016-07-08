@@ -30,15 +30,16 @@ public class MainStage extends Application {
 
     /**
      * Entry point to the program.
+     *
      * @param args arguments.
      */
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         launch(args);
     }
 
     /**
      * Method for launching application.
+     *
      * @param primaryStage main window.
      * @throws Exception
      */
@@ -57,6 +58,7 @@ public class MainStage extends Application {
 
     /**
      * Method for centering stage (window).
+     *
      * @param stage stage for centering.
      */
     private static void centerStagePosition(Stage stage) {
@@ -67,6 +69,7 @@ public class MainStage extends Application {
 
     /**
      * Method for applying default stage settings.
+     *
      * @param stage stage for applying settings.
      */
     private static void applyDefaultStageSettings(Stage stage) {
