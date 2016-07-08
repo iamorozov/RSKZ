@@ -2,12 +2,13 @@ package ru.fors.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 /**
- * Created by Alexander Zhaleiko on 04.06.2016.
+ * Class representing the main page of "СУЭ"
  */
-public class MainPage extends Page{
+public class MainPage extends Page {
     public MainPage(WebDriver driver) {
         super(driver);
     }
@@ -30,115 +31,122 @@ public class MainPage extends Page{
     private By saveIncidentButton = By.xpath("//button[text()='Готово']");
     private By firsRowInTable = By.xpath("//tbody[@role='presentation']//td[2]/div");
 
-    public void waitUntilMainPageLoaded(){
+    public void waitUntilMainPageLoaded() {
         wait.until(ExpectedConditions.visibilityOfElementLocated(infopanelMenu));
     }
-    public void userClickInfopanelMenu(){
+
+    public void userClickInfopanelMenu() {
         click(infopanelMenu);
         waitUntilElementPresent(searchScript);
     }
 
-    public void userClickSearchScript(){
+    public void userClickSearchScript() {
         click(searchScript);
         waitUntilFrameToBeAvaibleAndSwitchToIt(1);
         waitUntilElementPresent(saveButton);
     }
 
-    public void switchToParentFrame(){
+    public void switchToParentFrame() {
         driver.switchTo().defaultContent();
     }
 
-    private void userClickSaveButton(){
+    private void userClickSaveButton() {
         click(saveButton);
     }
 
-    private void userClickLogoutButton(){
+    private void userClickLogoutButton() {
         switchToParentFrame();
         click(logoutButton);
     }
 
-    public void userLogout(){
+    public void userLogout() {
         userClickLogoutButton();
         wait.until(ExpectedConditions.alertIsPresent());
         driver.switchTo().alert().accept();
         waitUntilElementPresent(loginAgainLink);
     }
-    private void userClickComboUpButton(){
+
+    private void userClickComboUpButton() {
         click(comboUpButton);
     }
 
-    private void userClickInWorkStatus(){
+    private void userClickInWorkStatus() {
         click(inWorkStatus);
     }
 
-    public void userChangeStatus(){
+    public void userChangeStatus() {
         waitUntilFrameToBeAvaibleAndSwitchToIt(1);
         userClickComboUpButton();
         userClickInWorkStatus();
         //waitUntilElementSetValue(statusField, "В работе");
     }
 
-    public void userSaveIncident(){
+    public void userSaveIncident() {
         waitUntilFrameToBeAvaibleAndSwitchToIt(1);
         userClickSaveButton();
         waitUntilElementPresent(returnBackButton);
     }
 
-    private void userClickMoreIconButton(){
+    private void userClickMoreIconButton() {
         click(moreIconButton);
     }
 
-    private void userClickInWaitButton2(){
+    private void userClickInWaitButton2() {
         click(inWaitButton2);
     }
 
-    public void userSetIncidentToInWork(){
-        userClickMoreIconButton();
-        userClickInWaitButton2();
+    public void userSetIncidentToInWork() {
+        if (findIfElementVisible(inWaitButton)) {
+            userClickInWaitButton();
+        } else {
+            userClickMoreIconButton();
+            userClickInWaitButton2();
+        }
         userClickInWaitReasonSelectButton();
         userClickIncidentDiagnosticLink();
         userTypeIncidentComment();
         userClickSaveIncidentButton();
     }
 
-    private void userClickInWaitReasonSelectButton(){
+    private void userClickInWaitButton() {
+        click(inWaitButton);
+    }
+
+    private void userClickInWaitReasonSelectButton() {
         click(inWaitReasonSelectButton);
     }
 
-    private void userClickIncidentDiagnosticLink(){
+    private void userClickIncidentDiagnosticLink() {
         click(incidentDiagnosticLink);
         waitUntilElementPresent(commentField);
     }
 
-    private void userTypeIncidentComment(){
+    private void userTypeIncidentComment() {
         type(commentField, "диагностика инцидента");
     }
 
-    private void userClickSaveIncidentButton(){
+    private void userClickSaveIncidentButton() {
         click(saveIncidentButton);
         waitUntilElementPresent(saveButton);
     }
 
-    public void getAndClickIncidentNumber(){
+    public void getAndClickIncidentNumber() {
         //waitUntilFrameToBeAvaibleAndSwitchToIt(0);
-        System.out.println("Next incident: "+getElementText(firsRowInTable));
+        System.out.println("Next incident: " + getElementText(firsRowInTable));
         click(firsRowInTable);
         switchToParentFrame();
         waitUntilFrameToBeAvaibleAndSwitchToIt(1);
     }
 
-    public boolean isIncidentExist(){
+    public boolean isIncidentExist() {
         waitUntilFrameToBeAvaibleAndSwitchToIt(0);
-        try{
+        try {
             wait.until(ExpectedConditions.presenceOfElementLocated(firsRowInTable));
             //waitUntilFrameToBeAvaibleAndSwitchToIt(1);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             //waitUntilFrameToBeAvaibleAndSwitchToIt(1);
             return false;
         }
-
     }
-
-
 }
