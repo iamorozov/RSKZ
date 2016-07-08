@@ -37,7 +37,7 @@ public class User {
 
         LoginPage loginPage = new LoginPage(driver);
         loginPage.waitForLoginPageLoaded();
-        MainPage mainPage = loginPage.userLogin(username, password);
+        MainPage mainPage = loginPage.userLogin(this);
         mainPage.waitUntilMainPageLoaded();
         mainPage.userClickInfopanelMenu();
         mainPage.userClickSearchScript();
@@ -61,5 +61,21 @@ public class User {
         } finally {
             mainPage.userLogout();
         }
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getDriverPath() {
+        return driverPath;
+    }
+
+    public String getRepresentation() {
+        return representation;
     }
 }
