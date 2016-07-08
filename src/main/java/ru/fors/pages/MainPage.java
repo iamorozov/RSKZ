@@ -14,7 +14,7 @@ public class MainPage extends Page {
     }
 
     private By infopanelMenu = By.xpath("//span[text()='Избранные объекты и инфопанели']");
-    private By searchScript = By.xpath("//span[text()='______тестирование скрипта']");
+    private By searchScript = By.xpath("//span[text()='открытые со 2й линии']");
     private By saveButton = By.xpath("//button[text()='Сохранить']");
     private By comboUpButton = By.id("X3Button");
     private By inWorkStatus = By.xpath("//div[text()='В работе']");
