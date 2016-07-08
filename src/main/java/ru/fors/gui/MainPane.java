@@ -5,6 +5,16 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import ru.fors.pages.User;
@@ -29,6 +39,15 @@ public class MainPane extends GridPane {
 
         fillFirstColumn();
         fillSecondColumn();
+    }
+
+    public void failToLoginMessage()
+    {
+        Text text1 = new Text("Вход не выполнен. Превышено количество сессий.");
+        text1.setFill(Color.RED);
+        add(text1, 0, (this.getChildren().size() - 1)/2 + 1);
+        setColumnSpan(text1, 2);
+        setHalignment(text1, HPos.CENTER);
     }
 
     private void fillSecondColumn() {
@@ -121,6 +140,11 @@ public class MainPane extends GridPane {
                 new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
                         representationTextField.getText()).startWork();
             }
+            failToLoginMessage();//
+            checkField(usernameTextField);
+            checkField(passwordField);
+            checkField(chromeDriverPath);
+            checkField(representationTextField);
         });
     }
 
