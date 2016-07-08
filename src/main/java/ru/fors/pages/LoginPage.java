@@ -32,11 +32,16 @@ public class LoginPage extends Page {
         click(enterButton);
     }
 
-    public MainPage userLogin(String username, String password) {
+    public MainPage userLogin(String username, String password) throws LoginException {
         userTypeUsername(username);
         userTypePassword(password);
         userClickEnterButton();
-        return new MainPage(driver);
+        if (driver.findElements(usernameField).get(0).isDisplayed())
+        {
+            throw new LoginException();
+        }
+        else
+            return new MainPage(driver);
     }
 
 
