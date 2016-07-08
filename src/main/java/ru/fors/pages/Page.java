@@ -51,12 +51,7 @@ public class Page {
     }
 
     private static ExpectedCondition<Boolean> waitElementValue(final By element, final String value) {
-        return new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(element).getAttribute("value").contains(value);
-            }
-        };
+        return webDriver -> webDriver.findElement(element).getAttribute("value").contains(value);
     }
 
     public void waitUntilElementSetValue(By element, String value) {
@@ -66,17 +61,5 @@ public class Page {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-
-}
-
-class LoginException extends Exception
-{
-    public static final String DEFAULT_MESSAGE = "Вход не выполнен. Ошибка.";
-
-    public LoginException()
-    {
-        super(DEFAULT_MESSAGE);
     }
 }
