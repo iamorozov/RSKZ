@@ -1,24 +1,21 @@
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.io.SyncFailedException;
 
 public class MainPane extends GridPane {
     private final TextField usernameTextField = new TextField();
     private final PasswordField passwordField = new PasswordField();
     private final TextField chromeDriverPath = new TextField();
     private final TextField representationTextField = new TextField();
+    private final TextArea activityTextArea = new TextArea();
+    private final Label activityLabel = new LabelWithStyle("Активность:");
 
     public MainPane() {
         setAlignment(Pos.CENTER);
@@ -59,7 +56,31 @@ public class MainPane extends GridPane {
         pathHBox.setSpacing(5);
         add(pathHBox, col, row++);
 
-        add(representationTextField, col, row);
+        add(representationTextField, col, row++);
+
+        ChoiceBox<String> debugChoice = new ChoiceBox<>();
+        debugChoice.getItems().addAll("false", "true");
+        debugChoice.getSelectionModel().selectFirst();
+        debugChoice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals("true"))
+            {
+                activityLabel.setVisible(true);
+                activityLabel.setManaged(true);
+                activityTextArea.setVisible(true);
+                activityTextArea.setManaged(true);
+            } else {
+                activityLabel.setVisible(false);
+                activityLabel.setManaged(false);
+                activityTextArea.setVisible(false);
+                activityTextArea.setManaged(false);
+            }
+        });
+        add(debugChoice, col, row++);
+
+        activityTextArea.setPrefRowCount(3);
+        activityTextArea.setVisible(false);
+        activityTextArea.setManaged(false);
+        add(activityTextArea, col, row);
     }
 
     private void fillFirstColumn() {
@@ -77,6 +98,13 @@ public class MainPane extends GridPane {
 
         final Label representationLabel = new LabelWithStyle("Имя представления:");
         add(representationLabel, col, row++);
+
+        final Label debugLabel = new LabelWithStyle("Режим отладки:");
+        add(debugLabel, col, row++);
+
+        activityLabel.setVisible(false);
+        activityLabel.setManaged(false);
+        add(activityLabel, col, row++);
 
         final Button runButton = new Button("Запуск");
         add(runButton, col, row);

@@ -16,16 +16,7 @@ public class MainStage extends Application {
     /**
      * Window height.
      */
-    private static final int STAGE_HEIGHT = 240;
-    /**
-     * Window min width.
-     */
-    private static final int STAGE_MIN_WIDTH = 450;
-    /**
-     * Window min height.
-     */
-    private static final int STAGE_MIN_HEIGTH = 240;
-
+    private static final int STAGE_HEIGHT = 275;
     /**
      * Entry point to the program.
      * @param args arguments.
@@ -70,7 +61,6 @@ public class MainStage extends Application {
     private static void applyDefaultStageSettings(Stage stage) {
         stage.setTitle("Clicker");
         centerStagePosition(stage);
-        stage.setMinWidth(STAGE_MIN_WIDTH);
-        stage.setMinHeight(STAGE_MIN_HEIGTH);
+        stage.setResizable(false);
     }
 }
