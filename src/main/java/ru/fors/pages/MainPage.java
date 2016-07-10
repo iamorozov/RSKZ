@@ -9,19 +9,16 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
  * Class representing the main page of "СУЭ"
  */
 public class MainPage extends Page {
-    public MainPage(WebDriver driver) {
-        super(driver);
-    }
 
     private By infopanelMenu = By.xpath("//span[text()='Избранные объекты и инфопанели']");
-    private By searchScript = By.xpath("//span[text()='открытые со 2й линии']");
+    private By searchScript;
     private By saveButton = By.xpath("//button[text()='Сохранить']");
     private By comboUpButton = By.id("X3Button");
     private By inWorkStatus = By.xpath("//div[text()='В работе']");
     private By inWaitButton = By.xpath("//button[text()='В ожидание']");
     private By returnBackButton = By.xpath("//button[text()='Возврат оператору']");
     private By statusField = By.id("X3");
-	private By activityField = By.id("X37");
+    private By activityField = By.id("X37");
     private By logoutButton = By.linkText("Выход");
     private By loginAgainLink = By.id("loginAgain");
     private By moreIconButton = By.cssSelector("button[class*='more-icon']");
@@ -31,6 +28,11 @@ public class MainPage extends Page {
     private By commentField = By.id("X11");
     private By saveIncidentButton = By.xpath("//button[text()='Готово']");
     private By firsRowInTable = By.xpath("//tbody[@role='presentation']//td[2]/div");
+
+    public MainPage(WebDriver driver, String representation) {
+        super(driver);
+        searchScript = By.xpath("//span[text()='" + representation + "']");
+    }
 
     public void waitUntilMainPageLoaded() {
         wait.until(ExpectedConditions.visibilityOfElementLocated(infopanelMenu));
@@ -81,8 +83,8 @@ public class MainPage extends Page {
         userClickInWorkStatus();
         waitUntilElementSetValue(statusField, "В работе");
     }
-	
-	public void changeActivity(String activityText) {
+
+    public void changeActivity(String activityText) {
         type(activityField, activityText);
     }
 

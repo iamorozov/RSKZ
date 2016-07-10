@@ -4,7 +4,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -17,10 +16,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
+import ru.fors.pages.LoginException;
 import ru.fors.pages.User;
-
 import java.io.File;
-import java.io.SyncFailedException;
 
 public class MainPane extends GridPane {
     private final TextField usernameTextField = new TextField();
@@ -137,14 +135,13 @@ public class MainPane extends GridPane {
                     checkField(passwordField) &&
                     checkField(chromeDriverPath) &&
                     checkField(representationTextField)) {
-                new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
-                        representationTextField.getText()).startWork();
+                try {
+                    new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
+                            representationTextField.getText()).startWork();
+                } catch (LoginException e1) {
+                    failToLoginMessage();
+                }
             }
-            failToLoginMessage();//
-            checkField(usernameTextField);
-            checkField(passwordField);
-            checkField(chromeDriverPath);
-            checkField(representationTextField);
         });
     }
 
