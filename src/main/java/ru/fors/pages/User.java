@@ -52,6 +52,10 @@ public class User {
         return representation;
     }
 
+    public String getActivity() {
+        return activity;
+    }
+
     public void startWork() throws LoginException {
 
         WebDriver driver = startBrowser();
