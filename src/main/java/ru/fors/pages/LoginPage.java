@@ -6,13 +6,13 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class LoginPage extends Page {
 
-    private By usernameField = By.id("LoginUsername");
-    private By passwordField = By.id("LoginPassword");
-    private By enterButton = By.id("loginBtn");
-
     public LoginPage(WebDriver driver) {
         super(driver);
     }
+
+    private By usernameField = By.id("LoginUsername");
+    private By passwordField = By.id("LoginPassword");
+    private By enterButton = By.id("loginBtn");
 
     public void waitForLoginPageLoaded() {
         wait.until(ExpectedConditions.visibilityOfElementLocated(enterButton));
@@ -36,10 +36,9 @@ public class LoginPage extends Page {
         userTypeUsername(user.getUsername());
         userTypePassword(user.getPassword());
         userClickEnterButton();
-        if (driver.findElements(usernameField).size() > 0) {
+        if (!driver.findElements(usernameField).isEmpty()) {
             throw new LoginException();
-        }
-
-        return new MainPage(driver, user.getRepresentation());
+        } else
+            return new MainPage(driver, user.getRepresentation());
     }
 }

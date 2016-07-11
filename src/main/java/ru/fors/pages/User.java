@@ -84,6 +84,7 @@ public class User {
                     changeActivity(mainPage);
                 }
             } catch (TimeoutException te) {
+                te.printStackTrace();
                 mainPage.reloadPage();
                 mainPage.waitUntilMainPageLoaded();
                 mainPage.userClickInfopanelMenu();
