@@ -25,6 +25,22 @@ public class User {
         this.representation = representation;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getDriverPath() {
+        return driverPath;
+    }
+
+    public String getRepresentation() {
+        return representation;
+    }
+
     public void startWork() throws LoginException {
 
         WebDriver driver = startBrowser();
@@ -42,7 +58,7 @@ public class User {
         }
     }
 
-    void manageAllIssues(MainPage mainPage) {
+    private void manageAllIssues(MainPage mainPage) {
         while (mainPage.isIncidentExist()) {
             try {
                 mainPage.getAndClickIncidentNumber();
@@ -74,21 +90,5 @@ public class User {
         driver.manage().window().maximize();
         driver.get(baseUrl);
         return driver;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getDriverPath() {
-        return driverPath;
-    }
-
-    public String getRepresentation() {
-        return representation;
     }
 }
