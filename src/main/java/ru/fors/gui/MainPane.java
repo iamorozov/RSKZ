@@ -1,14 +1,9 @@
 package ru.fors.gui;
 
-import com.thoughtworks.selenium.webdriven.commands.Check;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -19,10 +14,8 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import ru.fors.pages.LoginException;
 import ru.fors.pages.User;
-import java.io.File;
 
-import java.io.SyncFailedException;
-import java.util.Arrays;
+import java.io.File;
 
 public class MainPane extends GridPane {
     private final TextField usernameTextField = new TextField();
@@ -168,8 +161,7 @@ public class MainPane extends GridPane {
     }
 
     private void checkCheckBoxes() {
-        if (!inWaitCheckBox.isSelected() && !changeActivityCheckBox.isSelected())
-        {
+        if (!inWaitCheckBox.isSelected() && !changeActivityCheckBox.isSelected()) {
             inWaitCheckBox.setStyle(RED_BORDER);
             changeActivityCheckBox.setStyle(RED_BORDER);
         } else {
