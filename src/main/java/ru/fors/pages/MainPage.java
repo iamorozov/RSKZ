@@ -77,8 +77,11 @@ public class MainPage extends Page {
         click(inWorkStatus);
     }
 
-    public void userChangeStatus() {
+    public void openFrame() {
         waitUntilFrameToBeAvaibleAndSwitchToIt(1);
+    }
+
+    public void userChangeStatus() {
         userClickComboUpButton();
         userClickInWorkStatus();
         waitUntilElementSetValue(statusField, "В работе");
