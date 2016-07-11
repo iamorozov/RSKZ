@@ -112,7 +112,7 @@ public class User {
         mainPage.openFrame();
         mainPage.changeActivity(activity);
         mainPage.switchToParentFrame();
-        mainPage.userSaveIncident();
+        mainPage.userSaveActivityChange();
     }
 
     private MainPage loginAndGetMainPage(WebDriver driver) throws LoginException {

@@ -137,7 +137,7 @@ public class MainPane extends GridPane {
                     checkField(representationTextField)) {
                 try {
                     new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
-                            representationTextField.getText()).startWork();
+                            representationTextField.getText(), activityTextArea.getText(), false).startWork();
                 } catch (LoginException e1) {
                     failToLoginMessage();
                 }

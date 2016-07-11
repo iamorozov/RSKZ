@@ -2,8 +2,9 @@ package ru.fors.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Class representing the main page of "СУЭ"
@@ -95,6 +96,12 @@ public class MainPage extends Page {
         waitUntilFrameToBeAvaibleAndSwitchToIt(1);
         userClickSaveButton();
         waitUntilElementPresent(returnBackButton);
+    }
+
+    public void userSaveActivityChange() {
+        waitUntilFrameToBeAvaibleAndSwitchToIt(1);
+        userClickSaveButton();
+        driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
     }
 
     private void userClickMoreIconButton() {
