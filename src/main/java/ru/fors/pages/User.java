@@ -27,17 +27,9 @@ public class User {
 
     public void startWork() throws LoginException {
 
-        String baseUrl = PropertyLoader.loadProperty("site.url");
-        Browser browser = new Browser();
-        browser.setName(PropertyLoader.loadProperty("browser.name"));
-        WebDriver driver = new WebDriverFactory(driverPath)
-                .getInstance(browser);
-        driver.manage().window().maximize();
-        driver.get(baseUrl);
+        WebDriver driver = startBrowser();
 
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.waitForLoginPageLoaded();
-        MainPage mainPage = loginPage.userLogin(this);
+        MainPage mainPage = loginAndGetMainPage(driver);
         mainPage.waitUntilMainPageLoaded();
         mainPage.userClickInfopanelMenu();
         mainPage.userClickSearchScript();
@@ -61,6 +53,23 @@ public class User {
         } finally {
             mainPage.userLogout();
         }
+    }
+
+    private MainPage loginAndGetMainPage(WebDriver driver) throws LoginException {
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.waitForLoginPageLoaded();
+        return loginPage.userLogin(this);
+    }
+
+    private WebDriver startBrowser() {
+        String baseUrl = PropertyLoader.loadProperty("site.url");
+        Browser browser = new Browser();
+        browser.setName(PropertyLoader.loadProperty("browser.name"));
+        WebDriver driver = new WebDriverFactory(driverPath)
+                .getInstance(browser);
+        driver.manage().window().maximize();
+        driver.get(baseUrl);
+        return driver;
     }
 
     public String getUsername() {
