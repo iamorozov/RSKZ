@@ -1,3 +1,4 @@
+import com.thoughtworks.selenium.webdriven.commands.Check;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -8,6 +9,7 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.SyncFailedException;
+import java.util.Arrays;
 
 public class MainPane extends GridPane {
     private final TextField usernameTextField = new TextField();
@@ -16,6 +18,13 @@ public class MainPane extends GridPane {
     private final TextField representationTextField = new TextField();
     private final TextArea activityTextArea = new TextArea();
     private final Label activityLabel = new LabelWithStyle("Активность:");
+    private final CheckBox inWaitCheckBox = new CheckBox("Перевод в ожидание");
+    private final CheckBox changeActivityCheckBox = new CheckBox("Изменение активности");
+
+    private final String RED_BORDER = "-fx-border-color: red";
+    private final String INHERIT_BORDER = "-fx-border-color: inherit";
+
+    private final int MAX_TEXT_LENGTH = 60;
 
     public MainPane() {
         setAlignment(Pos.CENTER);
@@ -58,11 +67,27 @@ public class MainPane extends GridPane {
 
         add(representationTextField, col, row++);
 
-        ChoiceBox<String> debugChoice = new ChoiceBox<>();
-        debugChoice.getItems().addAll("false", "true");
-        debugChoice.getSelectionModel().selectFirst();
-        debugChoice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.equals("true"))
+//        ChoiceBox<String> debugChoice = new ChoiceBox<>();
+//        debugChoice.getItems().addAll("false", "true");
+//        debugChoice.getSelectionModel().selectFirst();
+//        debugChoice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue.equals("true"))
+//            {
+//                activityLabel.setVisible(true);
+//                activityLabel.setManaged(true);
+//                activityTextArea.setVisible(true);
+//                activityTextArea.setManaged(true);
+//            } else {
+//                activityLabel.setVisible(false);
+//                activityLabel.setManaged(false);
+//                activityTextArea.setVisible(false);
+//                activityTextArea.setManaged(false);
+//            }
+//        });
+//        add(debugChoice, col, row++);
+
+        changeActivityCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue)
             {
                 activityLabel.setVisible(true);
                 activityLabel.setManaged(true);
@@ -75,11 +100,15 @@ public class MainPane extends GridPane {
                 activityTextArea.setManaged(false);
             }
         });
-        add(debugChoice, col, row++);
+        add(changeActivityCheckBox, col, row++);
 
         activityTextArea.setPrefRowCount(3);
         activityTextArea.setVisible(false);
         activityTextArea.setManaged(false);
+        activityTextArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (activityTextArea.getText().length() > MAX_TEXT_LENGTH)
+                activityTextArea.setText(activityTextArea.getText(0, MAX_TEXT_LENGTH));
+        });
         add(activityTextArea, col, row);
     }
 
@@ -99,8 +128,10 @@ public class MainPane extends GridPane {
         final Label representationLabel = new LabelWithStyle("Имя представления:");
         add(representationLabel, col, row++);
 
-        final Label debugLabel = new LabelWithStyle("Режим отладки:");
-        add(debugLabel, col, row++);
+//        final Label debugLabel = new LabelWithStyle("Режим отладки:");
+//        add(debugLabel, col, row++);
+
+        add(inWaitCheckBox, col, row++);
 
         activityLabel.setVisible(false);
         activityLabel.setManaged(false);
@@ -115,14 +146,26 @@ public class MainPane extends GridPane {
             checkField(passwordField);
             checkField(chromeDriverPath);
             checkField(representationTextField);
+            checkCheckBoxes();
         });
     }
 
     private void checkField(TextField field) {
         if (field.getText().isEmpty())
-            field.setStyle("-fx-border-color: red");
+            field.setStyle(RED_BORDER);
         else
-            field.setStyle("-fx-border-color: inherit");
+            field.setStyle(INHERIT_BORDER);
+    }
+
+    private void checkCheckBoxes() {
+        if (!inWaitCheckBox.isSelected() && !changeActivityCheckBox.isSelected())
+        {
+            inWaitCheckBox.setStyle(RED_BORDER);
+            changeActivityCheckBox.setStyle(RED_BORDER);
+        } else {
+            inWaitCheckBox.setStyle(INHERIT_BORDER);
+            changeActivityCheckBox.setStyle(INHERIT_BORDER);
+        }
     }
 
     private void setColumns() {
