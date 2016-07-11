@@ -25,44 +25,6 @@ public class User {
         this.representation = representation;
     }
 
-    public void startWork() throws LoginException {
-
-        String baseUrl = PropertyLoader.loadProperty("site.url");
-        Browser browser = new Browser();
-        browser.setName(PropertyLoader.loadProperty("browser.name"));
-        WebDriver driver = new WebDriverFactory(driverPath)
-                .getInstance(browser);
-        driver.manage().window().maximize();
-        driver.get(baseUrl);
-
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.waitForLoginPageLoaded();
-        MainPage mainPage = loginPage.userLogin(this);
-        mainPage.waitUntilMainPageLoaded();
-        mainPage.userClickInfopanelMenu();
-        mainPage.userClickSearchScript();
-        try {
-            while (mainPage.isIncidentExist()) {
-                try {
-                    mainPage.getAndClickIncidentNumber();
-                    mainPage.userChangeStatus();
-                    mainPage.switchToParentFrame();
-                    mainPage.userSaveIncident();
-                    mainPage.userSetIncidentToInWork();
-                } catch (TimeoutException te) {
-                    mainPage.reloadPage();
-                    mainPage.waitUntilMainPageLoaded();
-                    mainPage.userClickInfopanelMenu();
-                    mainPage.userClickSearchScript();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            mainPage.userLogout();
-        }
-    }
-
     public String getUsername() {
         return username;
     }
@@ -77,5 +39,56 @@ public class User {
 
     public String getRepresentation() {
         return representation;
+    }
+
+    public void startWork() throws LoginException {
+
+        WebDriver driver = startBrowser();
+
+        MainPage mainPage = loginAndGetMainPage(driver);
+        mainPage.waitUntilMainPageLoaded();
+        mainPage.userClickInfopanelMenu();
+        mainPage.userClickSearchScript();
+        try {
+            manageAllIssues(mainPage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            mainPage.userLogout();
+        }
+    }
+
+    private void manageAllIssues(MainPage mainPage) {
+        while (mainPage.isIncidentExist()) {
+            try {
+                mainPage.getAndClickIncidentNumber();
+                mainPage.userChangeStatus();
+                mainPage.switchToParentFrame();
+                mainPage.userSaveIncident();
+                mainPage.userSetIncidentToInWork();
+            } catch (TimeoutException te) {
+                mainPage.reloadPage();
+                mainPage.waitUntilMainPageLoaded();
+                mainPage.userClickInfopanelMenu();
+                mainPage.userClickSearchScript();
+            }
+        }
+    }
+
+    private MainPage loginAndGetMainPage(WebDriver driver) throws LoginException {
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.waitForLoginPageLoaded();
+        return loginPage.userLogin(this);
+    }
+
+    private WebDriver startBrowser() {
+        String baseUrl = PropertyLoader.loadProperty("site.url");
+        Browser browser = new Browser();
+        browser.setName(PropertyLoader.loadProperty("browser.name"));
+        WebDriver driver = new WebDriverFactory(driverPath)
+                .getInstance(browser);
+        driver.manage().window().maximize();
+        driver.get(baseUrl);
+        return driver;
     }
 }

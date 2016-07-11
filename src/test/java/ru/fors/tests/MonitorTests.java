@@ -1,21 +1,22 @@
 package ru.fors.tests;
 
 import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriverException;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-
-import ru.fors.pages.MainPage;
+import ru.fors.pages.LoginException;
 import ru.fors.pages.LoginPage;
+import ru.fors.pages.MainPage;
+import ru.fors.pages.User;
 
 public class MonitorTests extends TestBase {
 
     @Test
     @Parameters({"username", "password"})
-    public void monitorTests(String username, String password) {
+    public void monitorTests(String username, String password) throws LoginException {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.waitForLoginPageLoaded();
-        MainPage mainPage = loginPage.userLogin(username, password);
+        User user = new User(username, password, "", "");
+        MainPage mainPage = loginPage.userLogin(user);
         mainPage.waitUntilMainPageLoaded();
         mainPage.userClickInfopanelMenu();
         mainPage.userClickSearchScript();
