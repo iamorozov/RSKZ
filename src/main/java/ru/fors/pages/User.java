@@ -17,12 +17,23 @@ public class User {
     private String password;
     private String driverPath;
     private String representation;
+    private String activity;
+    private boolean doChangeStatus;
+    private boolean doChangeActivity;
 
     public User(String username, String password, String driverPath, String representation) {
         this.username = username;
         this.password = password;
         this.driverPath = driverPath;
         this.representation = representation;
+        doChangeStatus = true;
+    }
+
+    public User(String username, String password, String driverPath, String representation, String activity, boolean doChangeStatus) {
+        this(username, password, driverPath, representation);
+        this.doChangeStatus = doChangeStatus;
+        this.activity = activity;
+        this.doChangeActivity = true;
     }
 
     public String getUsername() {
@@ -61,11 +72,13 @@ public class User {
     private void manageAllIssues(MainPage mainPage) {
         while (mainPage.isIncidentExist()) {
             try {
-                mainPage.getAndClickIncidentNumber();
-                mainPage.userChangeStatus();
-                mainPage.switchToParentFrame();
-                mainPage.userSaveIncident();
-                mainPage.userSetIncidentToInWork();
+                if (doChangeStatus && doChangeActivity) {
+                    changeStatusAndActivity(mainPage);
+                } else if (doChangeStatus) {
+                    changeStatus(mainPage);
+                } else if (doChangeActivity) {
+                    changeActivity(mainPage);
+                }
             } catch (TimeoutException te) {
                 mainPage.reloadPage();
                 mainPage.waitUntilMainPageLoaded();
@@ -73,6 +86,33 @@ public class User {
                 mainPage.userClickSearchScript();
             }
         }
+    }
+
+    private void changeStatus(MainPage mainPage) {
+        mainPage.getAndClickIncidentNumber();
+        mainPage.openFrame();
+        mainPage.userChangeStatus();
+        mainPage.switchToParentFrame();
+        mainPage.userSaveIncident();
+        mainPage.userSetIncidentToInWork();
+    }
+
+    private void changeStatusAndActivity(MainPage mainPage) {
+        mainPage.getAndClickIncidentNumber();
+        mainPage.openFrame();
+        mainPage.userChangeStatus();
+        mainPage.changeActivity(activity);
+        mainPage.switchToParentFrame();
+        mainPage.userSaveIncident();
+        mainPage.userSetIncidentToInWork();
+    }
+
+    private void changeActivity(MainPage mainPage) {
+        mainPage.getAndClickIncidentNumber();
+        mainPage.openFrame();
+        mainPage.changeActivity(activity);
+        mainPage.switchToParentFrame();
+        mainPage.userSaveIncident();
     }
 
     private MainPage loginAndGetMainPage(WebDriver driver) throws LoginException {
