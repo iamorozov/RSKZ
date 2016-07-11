@@ -34,24 +34,28 @@ public class User {
         mainPage.userClickInfopanelMenu();
         mainPage.userClickSearchScript();
         try {
-            while (mainPage.isIncidentExist()) {
-                try {
-                    mainPage.getAndClickIncidentNumber();
-                    mainPage.userChangeStatus();
-                    mainPage.switchToParentFrame();
-                    mainPage.userSaveIncident();
-                    mainPage.userSetIncidentToInWork();
-                } catch (TimeoutException te) {
-                    mainPage.reloadPage();
-                    mainPage.waitUntilMainPageLoaded();
-                    mainPage.userClickInfopanelMenu();
-                    mainPage.userClickSearchScript();
-                }
-            }
+            manageAllIssues(mainPage);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             mainPage.userLogout();
+        }
+    }
+
+    void manageAllIssues(MainPage mainPage) {
+        while (mainPage.isIncidentExist()) {
+            try {
+                mainPage.getAndClickIncidentNumber();
+                mainPage.userChangeStatus();
+                mainPage.switchToParentFrame();
+                mainPage.userSaveIncident();
+                mainPage.userSetIncidentToInWork();
+            } catch (TimeoutException te) {
+                mainPage.reloadPage();
+                mainPage.waitUntilMainPageLoaded();
+                mainPage.userClickInfopanelMenu();
+                mainPage.userClickSearchScript();
+            }
         }
     }
 
