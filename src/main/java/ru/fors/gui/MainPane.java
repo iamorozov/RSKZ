@@ -139,10 +139,16 @@ public class MainPane extends GridPane {
             if (checkField(usernameTextField) &&
                     checkField(passwordField) &&
                     checkField(chromeDriverPath) &&
-                    checkField(representationTextField)) {
+                    checkField(representationTextField) &&
+                    checkCheckBoxes()) {
                 try {
-                    new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
-                            representationTextField.getText(), activityTextArea.getText(), false).startWork();
+                    if(changeActivityCheckBox.isSelected())
+                        new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
+                                 representationTextField.getText(), activityTextArea.getText(),
+                                inWaitCheckBox.isSelected()).startWork();
+                    else
+                        new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
+                                representationTextField.getText()).startWork();
                 } catch (LoginException e1) {
                     failToLoginMessage();
                 }
@@ -160,13 +166,15 @@ public class MainPane extends GridPane {
         }
     }
 
-    private void checkCheckBoxes() {
+    private boolean checkCheckBoxes() {
         if (!inWaitCheckBox.isSelected() && !changeActivityCheckBox.isSelected()) {
             inWaitCheckBox.setStyle(RED_BORDER);
             changeActivityCheckBox.setStyle(RED_BORDER);
+            return false;
         } else {
             inWaitCheckBox.setStyle(INHERIT_BORDER);
             changeActivityCheckBox.setStyle(INHERIT_BORDER);
+            return true;
         }
     }
 
