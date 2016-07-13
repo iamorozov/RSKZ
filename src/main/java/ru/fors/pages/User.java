@@ -122,12 +122,10 @@ public class User {
         mainPage.switchToParentFrame();
         mainPage.userSaveIncident();
         mainPage.openFrame();
-        mainPage.userChangeStatusSolved();
-        mainPage.switchToParentFrame();
-        mainPage.openFrame();
-        mainPage.userSetIncidentSolved();
+        mainPage.userSetIncidentSolutionType();
         mainPage.userTypeSolveText(solution);
         mainPage.setSolvedOnSecondLine();
+        mainPage.userChangeStatusSolved();
         mainPage.switchToParentFrame();
         mainPage.userSaveIncident();
     }

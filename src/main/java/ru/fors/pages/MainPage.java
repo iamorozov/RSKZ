@@ -160,7 +160,7 @@ public class MainPage extends Page {
         userClickSaveIncidentButton();
     }
 
-    public void userSetIncidentSolved() {
+    public void userSetIncidentSolutionType() {
         userClickComboUpSolveButton();
         userClickPermanentStatus();
         waitUntilElementSetValue(solveTypeField, "Постоянное");
