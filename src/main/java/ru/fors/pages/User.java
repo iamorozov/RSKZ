@@ -6,13 +6,16 @@ import ru.fors.utils.Browser;
 import ru.fors.utils.PropertyLoader;
 import ru.fors.utils.WebDriverFactory;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.*;
+
 /**
  * Created by Morozov Ivan on 08.07.2016.
  * <p>
  * Class presents a User
  */
-public class User {
-
+public class User implements Serializable {
     private String username;
     private String password;
     private String driverPath;
@@ -22,6 +25,10 @@ public class User {
     private boolean doChangeStatus;
     private boolean doChangeActivity;
     private boolean doChangeStatusToSolve;
+
+    public User() {
+
+    }
 
     public User(String username, String password, String driverPath, String representation) {
         this.username = username;
@@ -47,6 +54,21 @@ public class User {
         this.doChangeStatusToSolve = true; // for test only //Todo return doChangeActivity
     }
 
+    public static void save(User object, String path) {
+        try {
+            XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(path)));
+            encoder.writeObject(object);
+            encoder.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static User decode(String path) throws FileNotFoundException {
+        XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(path)));
+        return (User) decoder.readObject();
+    }
+
     public String getUsername() {
         return username;
     }
@@ -65,6 +87,58 @@ public class User {
 
     public String getActivity() {
         return activity;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setDriverPath(String driverPath) {
+        this.driverPath = driverPath;
+    }
+
+    public void setRepresentation(String representation) {
+        this.representation = representation;
+    }
+
+    public void setActivity(String activity) {
+        this.activity = activity;
+    }
+
+    public String getSolution() {
+        return solution;
+    }
+
+    public void setSolution(String solution) {
+        this.solution = solution;
+    }
+
+    public boolean isDoChangeStatus() {
+        return doChangeStatus;
+    }
+
+    public void setDoChangeStatus(boolean doChangeStatus) {
+        this.doChangeStatus = doChangeStatus;
+    }
+
+    public boolean isDoChangeActivity() {
+        return doChangeActivity;
+    }
+
+    public void setDoChangeActivity(boolean doChangeActivity) {
+        this.doChangeActivity = doChangeActivity;
+    }
+
+    public boolean isDoChangeStatusToSolve() {
+        return doChangeStatusToSolve;
+    }
+
+    public void setDoChangeStatusToSolve(boolean doChangeStatusToSolve) {
+        this.doChangeStatusToSolve = doChangeStatusToSolve;
     }
 
     public void startWork() throws LoginException {
