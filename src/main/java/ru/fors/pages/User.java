@@ -201,7 +201,7 @@ public class User implements Serializable {
         mainPage.setSolvedOnSecondLine();
         mainPage.userChangeStatusSolved();
         mainPage.switchToParentFrame();
-        mainPage.userSaveIncident();
+        mainPage.userSaveActivityChange();
     }
 
     private void changeStatusAndActivity(MainPage mainPage) {
