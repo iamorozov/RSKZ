@@ -9,7 +9,7 @@ import ru.fors.utils.WebDriverFactory;
 /**
  * Created by Morozov Ivan on 08.07.2016.
  * <p>
- * Class presents a User
+ * Class presents a User in "СУЭ"
  */
 public class User {
 
@@ -56,6 +56,10 @@ public class User {
         return activity;
     }
 
+    /**
+     * Start working for defined user
+     * @throws LoginException is some logging problem occurred
+     */
     public void startWork() throws LoginException {
 
         WebDriver driver = startBrowser();
@@ -73,6 +77,10 @@ public class User {
         }
     }
 
+    /**
+     * Make defined operations on all of the incidents in some representation
+     * @param mainPage an instance of {@code MainPage} class
+     */
     private void manageAllIssues(MainPage mainPage) {
         while (mainPage.isIncidentExist()) {
             try {
@@ -93,6 +101,10 @@ public class User {
         }
     }
 
+    /**
+     * Changes status of incident
+     * @param mainPage an instance of {@code MainPage} class
+     */
     private void changeStatus(MainPage mainPage) {
         mainPage.getAndClickIncidentNumber();
         mainPage.openFrame();
@@ -102,6 +114,10 @@ public class User {
         mainPage.userSetIncidentToInWork();
     }
 
+    /**
+     * Changes both a status of incident and activity field
+     * @param mainPage an instance of {@code MainPage} class
+     */
     private void changeStatusAndActivity(MainPage mainPage) {
         mainPage.getAndClickIncidentNumber();
         mainPage.openFrame();
@@ -112,6 +128,10 @@ public class User {
         mainPage.userSetIncidentToInWork();
     }
 
+    /**
+     * Rewrites a value in "Активность" field
+     * @param mainPage an instance of {@code MainPage} class
+     */
     private void changeActivity(MainPage mainPage) {
         mainPage.getAndClickIncidentNumber();
         mainPage.openFrame();
@@ -120,12 +140,22 @@ public class User {
         mainPage.userSaveActivityChange();
     }
 
+    /**
+     * Makes authorization of user
+     * @param driver - an instance of {@code WebDriver} class
+     * @return {@code MainPage} instance
+     * @throws LoginException if some error occured while logging
+     */
     private MainPage loginAndGetMainPage(WebDriver driver) throws LoginException {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.waitForLoginPageLoaded();
         return loginPage.userLogin(this);
     }
 
+    /**
+     * Starts browser and open "СУЭ" page
+     * @return an instance of {@code WebDriver} class
+     */
     private WebDriver startBrowser() {
         String baseUrl = PropertyLoader.loadProperty("site.url");
         Browser browser = new Browser();
