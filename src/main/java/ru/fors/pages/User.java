@@ -18,8 +18,10 @@ public class User {
     private String driverPath;
     private String representation;
     private String activity;
+    private String solution;
     private boolean doChangeStatus;
     private boolean doChangeActivity;
+    private boolean doChangeStatusToSolve;
 
     public User(String username, String password, String driverPath, String representation) {
         this.username = username;
@@ -29,11 +31,20 @@ public class User {
         doChangeStatus = true;
     }
 
+    public User(String username, String password, String driverPath, String representation, String solution) {
+        this.username = username;
+        this.password = password;
+        this.driverPath = driverPath;
+        this.representation = representation;
+        this.solution = solution;
+        doChangeStatusToSolve = true;
+    }
+
     public User(String username, String password, String driverPath, String representation, String activity, boolean doChangeStatus) {
         this(username, password, driverPath, representation);
         this.doChangeStatus = doChangeStatus;
-        this.activity = activity;
-        this.doChangeActivity = true;
+        this.solution = activity; // for test only // TODO return activity
+        this.doChangeStatusToSolve = true; // for test only //Todo return doChangeActivity
     }
 
     public String getUsername() {
@@ -82,6 +93,8 @@ public class User {
                     changeStatus(mainPage);
                 } else if (doChangeActivity) {
                     changeActivity(mainPage);
+                } else if (doChangeStatusToSolve) {
+                    changeStatusToSolve(mainPage);
                 }
             } catch (TimeoutException te) {
                 te.printStackTrace();
@@ -100,6 +113,23 @@ public class User {
         mainPage.switchToParentFrame();
         mainPage.userSaveIncident();
         mainPage.userSetIncidentToInWork();
+    }
+
+    private void changeStatusToSolve(MainPage mainPage) {
+        mainPage.getAndClickIncidentNumber();
+        mainPage.openFrame();
+        mainPage.userChangeStatus();
+        mainPage.switchToParentFrame();
+        mainPage.userSaveIncident();
+        mainPage.openFrame();
+        mainPage.userChangeStatusSolved();
+        mainPage.switchToParentFrame();
+        mainPage.openFrame();
+        mainPage.userSetIncidentSolved();
+        mainPage.userTypeSolveText(solution);
+        mainPage.setSolvedOnSecondLine();
+        mainPage.switchToParentFrame();
+        mainPage.userSaveIncident();
     }
 
     private void changeStatusAndActivity(MainPage mainPage) {

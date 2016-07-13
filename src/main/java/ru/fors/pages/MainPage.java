@@ -120,6 +120,7 @@ public class MainPage extends Page {
         userClickComboUpButton();
         userClickSolvedStatus();
         waitUntilElementSetValue(statusField, "Решен");
+        driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
     }
 
     public void changeActivity(String activityText) {
