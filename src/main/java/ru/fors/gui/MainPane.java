@@ -27,9 +27,9 @@ public class MainPane extends GridPane {
     private final Label activityLabel = new LabelWithStyle("Активность:");
     private final CheckBox inWaitCheckBox = new CheckBox("Перевод в ожидание");
     private final CheckBox changeActivityCheckBox = new CheckBox("Изменение активности");
-    private final RadioButton closeActivityRadioButton = new RadioButton("Закрытие инцидентов");
+    private final RadioButton closeIncidentRadioButton = new RadioButton("Закрытие инцидентов");
     private final RadioButton workingWithActivitiesRadioButton = new RadioButton("Работа с активностями");
-    private final TextArea closeActivityTextArea = new TextArea();
+    private final TextArea solutionTextArea = new TextArea();
     private final Label closeLabel = new LabelWithStyle("Текст решения: ");
 
     private final String RED_BORDER = "-fx-border-color: red";
@@ -96,11 +96,11 @@ public class MainPane extends GridPane {
         add(pathHBox, col, row++);
 
         add(representationTextField, col, row++);
-        //add(closeActivityRadioButton, col-1, row++);
+        //add(closeIncidentRadioButton, col-1, row++);
         add(workingWithActivitiesRadioButton, col, row++);
-        workingWithActivitiesRadioButton.setOnAction(e->{
+        workingWithActivitiesRadioButton.setOnAction(e -> {
             closeLabel.setVisible(false);
-            closeActivityTextArea.setVisible(false);
+            solutionTextArea.setVisible(false);
             changeActivityCheckBox.setVisible(true);
             inWaitCheckBox.setVisible(true);
         });
@@ -150,15 +150,15 @@ public class MainPane extends GridPane {
         inWaitCheckBox.setVisible(false);
         closeLabel.setVisible(false);
         add(inWaitCheckBox, col, ++row);
-        add(closeActivityRadioButton, col, row - 1);
-        add(closeActivityTextArea, col + 1, row);
+        add(closeIncidentRadioButton, col, row - 1);
+        add(solutionTextArea, col + 1, row);
         add(closeLabel, col, row++);
-        closeActivityTextArea.setVisible(false);
+        solutionTextArea.setVisible(false);
         ToggleGroup toggleGroup = new ToggleGroup();
-        toggleGroup.getToggles().addAll(workingWithActivitiesRadioButton, closeActivityRadioButton);
+        toggleGroup.getToggles().addAll(workingWithActivitiesRadioButton, closeIncidentRadioButton);
 
 
-        closeActivityRadioButton.setOnAction(e -> {
+        closeIncidentRadioButton.setOnAction(e -> {
             activityLabel.setVisible(false);
             activityTextArea.setVisible(false);
             activityTextArea.setManaged(false);
@@ -166,7 +166,7 @@ public class MainPane extends GridPane {
             inWaitCheckBox.setVisible(false);
             inWaitCheckBox.setSelected(false);
             changeActivityCheckBox.setSelected(false);
-            closeActivityTextArea.setVisible(true);
+            solutionTextArea.setVisible(true);
             closeLabel.setVisible(true);
         });
 
@@ -178,28 +178,48 @@ public class MainPane extends GridPane {
         add(runButton, col, row);
         setColumnSpan(runButton, 2);
         setHalignment(runButton, HPos.CENTER);
-        runButton.setOnAction(e -> {
-
-            if (checkField(usernameTextField) &&
-                    checkField(passwordField) &&
-                    checkField(chromeDriverPath) &&
-                    checkField(representationTextField) &&
-                    checkCheckBoxes()) {
-                try {
-                    if (changeActivityCheckBox.isSelected())
-                        new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
-                                representationTextField.getText(), activityTextArea.getText(),
-                                inWaitCheckBox.isSelected()).startWork();
-                    else new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
-                            representationTextField.getText()).startWork();
-                } catch (LoginException e1) {
-                    failToLoginMessage();
-                }
-            }
-        });
+        runButton.setOnAction(e -> startButton());
     }
 
-    private boolean checkField(TextField field) {
+    private void startButton() {
+
+        if (checkInputData()) {
+            try {
+                if (workingWithActivitiesRadioButton.isSelected())
+                    startManagingIncidents();
+                else if (closeIncidentRadioButton.isSelected())
+                    startClosingIncidents();
+            } catch (LoginException e1) {
+                failToLoginMessage();
+            }
+        }
+    }
+
+    private void startClosingIncidents() {
+        if (checkField(solutionTextArea))
+            new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
+                    representationTextField.getText(), solutionTextArea.getText());
+    }
+
+    private void startManagingIncidents() throws LoginException {
+        if (checkCheckBoxes())
+            if (changeActivityCheckBox.isSelected())
+                new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
+                        representationTextField.getText(), activityTextArea.getText(),
+                        inWaitCheckBox.isSelected()).startWork();
+            else
+                new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
+                        representationTextField.getText()).startWork();
+    }
+
+    private boolean checkInputData() {
+        return checkField(usernameTextField) &&
+                checkField(passwordField) &&
+                checkField(chromeDriverPath) &&
+                checkField(representationTextField);
+    }
+
+    private boolean checkField(TextInputControl field) {
         if (field.getText().isEmpty()) {
             field.setStyle(RED_BORDER);
             return false;
