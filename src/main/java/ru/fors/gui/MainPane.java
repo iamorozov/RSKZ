@@ -15,7 +15,6 @@ import javafx.stage.FileChooser;
 import ru.fors.pages.LoginException;
 import ru.fors.pages.User;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 
