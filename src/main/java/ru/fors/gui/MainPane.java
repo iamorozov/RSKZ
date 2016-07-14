@@ -15,6 +15,7 @@ import javafx.stage.FileChooser;
 import ru.fors.pages.LoginException;
 import ru.fors.pages.User;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -27,6 +28,10 @@ public class MainPane extends GridPane {
     private final Label activityLabel = new LabelWithStyle("Активность:");
     private final CheckBox inWaitCheckBox = new CheckBox("Перевод в ожидание");
     private final CheckBox changeActivityCheckBox = new CheckBox("Изменение активности");
+    private final RadioButton closeActivityRadioButton = new RadioButton("Закрытие инцидентов");
+    private final RadioButton workingWithActivitiesRadioButton = new RadioButton("Работа с активностями");
+    private final TextArea closeActivityTextArea = new TextArea();
+    private final Label closeLabel = new LabelWithStyle("Текст решения: ");
 
     private final String RED_BORDER = "-fx-border-color: red";
     private final String INHERIT_BORDER = "-fx-border-color: inherit";
@@ -92,6 +97,14 @@ public class MainPane extends GridPane {
         add(pathHBox, col, row++);
 
         add(representationTextField, col, row++);
+        //add(closeActivityRadioButton, col-1, row++);
+        add(workingWithActivitiesRadioButton, col, row++);
+        workingWithActivitiesRadioButton.setOnAction(e->{
+            closeLabel.setVisible(false);
+            closeActivityTextArea.setVisible(false);
+            changeActivityCheckBox.setVisible(true);
+            inWaitCheckBox.setVisible(true);
+        });
 
         changeActivityCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -106,6 +119,7 @@ public class MainPane extends GridPane {
                 activityTextArea.setManaged(false);
             }
         });
+        changeActivityCheckBox.setVisible(false);
         add(changeActivityCheckBox, col, row++);
 
         activityTextArea.setPrefRowCount(3);
@@ -134,7 +148,28 @@ public class MainPane extends GridPane {
         final Label representationLabel = new LabelWithStyle("Имя представления:");
         add(representationLabel, col, row++);
 
-        add(inWaitCheckBox, col, row++);
+        inWaitCheckBox.setVisible(false);
+        closeLabel.setVisible(false);
+        add(inWaitCheckBox, col, ++row);
+        add(closeActivityRadioButton, col, row - 1);
+        add(closeActivityTextArea, col + 1, row);
+        add(closeLabel, col, row++);
+        closeActivityTextArea.setVisible(false);
+        ToggleGroup toggleGroup = new ToggleGroup();
+        toggleGroup.getToggles().addAll(workingWithActivitiesRadioButton, closeActivityRadioButton);
+
+
+        closeActivityRadioButton.setOnAction(e -> {
+            activityLabel.setVisible(false);
+            activityTextArea.setVisible(false);
+            activityTextArea.setManaged(false);
+            changeActivityCheckBox.setVisible(false);
+            inWaitCheckBox.setVisible(false);
+            inWaitCheckBox.setSelected(false);
+            changeActivityCheckBox.setSelected(false);
+            closeActivityTextArea.setVisible(true);
+            closeLabel.setVisible(true);
+        });
 
         activityLabel.setVisible(false);
         activityLabel.setManaged(false);
