@@ -50,8 +50,8 @@ public class User implements Serializable {
     public User(String username, String password, String driverPath, String representation, String activity, boolean doChangeStatus) {
         this(username, password, driverPath, representation);
         this.doChangeStatus = doChangeStatus;
-        this.solution = activity; // for test only // TODO return activity
-        this.doChangeStatusToSolve = true; // for test only //Todo return doChangeActivity
+        this.activity = activity;
+        this.doChangeActivity = true;
     }
 
     public static void save(User object, String path) {
