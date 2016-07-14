@@ -1,6 +1,7 @@
 package ru.fors.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -17,6 +18,10 @@ public class Page {
         wait = new WebDriverWait(driver, Long.parseLong(PropertyLoader.loadProperty("imp.wait")));
     }
 
+    private static ExpectedCondition<Boolean> waitElementValue(final By element, final String value) {
+        return webDriver -> webDriver.findElement(element).getAttribute("value").contains(value);
+    }
+
     public void type(By element, String string) {
         driver.findElement(element).clear();
         driver.findElement(element).sendKeys(string);
@@ -24,7 +29,8 @@ public class Page {
 
     public void click(By element) {
         waitUntilElementPresent(element);
-        driver.findElement(element).click();
+        ((JavascriptExecutor)driver).executeScript("arguments[0].click();", driver.findElement(element));
+        //driver.findElement(element).click();
     }
 
     public String getElementText(By element) {
@@ -48,10 +54,6 @@ public class Page {
 
     public void reloadPage() {
         driver.navigate().refresh();
-    }
-
-    private static ExpectedCondition<Boolean> waitElementValue(final By element, final String value) {
-        return webDriver -> webDriver.findElement(element).getAttribute("value").contains(value);
     }
 
     public void waitUntilElementSetValue(By element, String value) {
