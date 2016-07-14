@@ -15,11 +15,19 @@ public class MainPage extends Page {
     private By searchScript;
     private By saveButton = By.xpath("//button[text()='Сохранить']");
     private By comboUpButton = By.id("X3Button");
+    private By comboUpSolveButton = By.id("X68Button");
+    private By comboUpClosureCodeButton = By.id("X92Button");
     private By inWorkStatus = By.xpath("//div[text()='В работе']");
+    private By solvedStatus = By.xpath("//div[text()='Решен']");
+    private By permanentStatus = By.xpath("//div[text()='Постоянное']");
+    private By solvedOnSecondLine = By.xpath("//div[text()='Решено на 2-й линии']");
     private By inWaitButton = By.xpath("//button[text()='В ожидание']");
     private By returnBackButton = By.xpath("//button[text()='Возврат оператору']");
     private By statusField = By.id("X3");
+    private By solveTypeField = By.id("X68");
+    private By closureCodeField = By.id("X92");
     private By activityField = By.id("X37");
+    private By solveField = By.id("X74");
     private By logoutButton = By.linkText("Выход");
     private By loginAgainLink = By.id("loginAgain");
     private By moreIconButton = By.cssSelector("button[class*='more-icon']");
@@ -74,8 +82,28 @@ public class MainPage extends Page {
         click(comboUpButton);
     }
 
+    private void userClickComboUpSolveButton() {
+        click(comboUpSolveButton);
+    }
+
+    private void userClickComboUpClosureCodeButton(){
+        click(comboUpClosureCodeButton);
+    }
+
     private void userClickInWorkStatus() {
         click(inWorkStatus);
+    }
+
+    private void userClickSolvedStatus() {
+        click(solvedStatus);
+    }
+
+    private void userClickPermanentStatus() {
+        click(permanentStatus);
+    }
+
+    private void userClickSolvedOnSecondLine(){
+        click(solvedOnSecondLine);
     }
 
     public void openFrame() {
@@ -86,6 +114,13 @@ public class MainPage extends Page {
         userClickComboUpButton();
         userClickInWorkStatus();
         waitUntilElementSetValue(statusField, "В работе");
+    }
+
+    public void userChangeStatusSolved() {
+        userClickComboUpButton();
+        userClickSolvedStatus();
+        waitUntilElementSetValue(statusField, "Решен");
+        driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
     }
 
     public void changeActivity(String activityText) {
@@ -123,6 +158,22 @@ public class MainPage extends Page {
         userClickIncidentDiagnosticLink();
         userTypeIncidentComment();
         userClickSaveIncidentButton();
+    }
+
+    public void userSetIncidentSolutionType() {
+        userClickComboUpSolveButton();
+        userClickPermanentStatus();
+        waitUntilElementSetValue(solveTypeField, "Постоянное");
+    }
+
+    public void userTypeSolveText(String solve) {
+        type(solveField, solve);
+    }
+
+    public void setSolvedOnSecondLine() {
+        userClickComboUpClosureCodeButton();
+        userClickSolvedOnSecondLine();
+        waitUntilElementSetValue(closureCodeField, "Решено на 2-й линии");
     }
 
     private void userClickInWaitButton() {

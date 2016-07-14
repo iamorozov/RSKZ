@@ -7,6 +7,8 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.util.List;
+
 /**
  * Main stage class (main window).
  */
@@ -36,7 +38,13 @@ public class MainStage extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        GridPane mainPane = new MainPane();
+        List<String> parameters = getParameters().getRaw();
+        GridPane mainPane;
+        if(parameters.isEmpty()) {
+            mainPane = new MainPane();
+        } else {
+            mainPane = new MainPane(parameters.get(0));
+        }
         Scene mainScene = new Scene(mainPane, STAGE_WIDTH, STAGE_HEIGHT);
 
 

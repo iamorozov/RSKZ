@@ -16,6 +16,7 @@ import ru.fors.pages.LoginException;
 import ru.fors.pages.User;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 public class MainPane extends GridPane {
     private final TextField usernameTextField = new TextField();
@@ -43,11 +44,21 @@ public class MainPane extends GridPane {
         fillSecondColumn();
     }
 
-    public void failToLoginMessage()
-    {
+    public MainPane(String path) {
+        this();
+        try {
+            User.decode(path).startWork();
+        } catch (LoginException e) {
+            failToLoginMessage();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void failToLoginMessage() {
         Text text1 = new Text("Вход не выполнен. Превышено количество сессий.");
         text1.setFill(Color.RED);
-        add(text1, 0, (this.getChildren().size() - 1)/2 + 1);
+        add(text1, 0, (this.getChildren().size() - 1) / 2 + 1);
         setColumnSpan(text1, 2);
         setHalignment(text1, HPos.CENTER);
     }
@@ -83,8 +94,7 @@ public class MainPane extends GridPane {
         add(representationTextField, col, row++);
 
         changeActivityCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue)
-            {
+            if (newValue) {
                 activityLabel.setVisible(true);
                 activityLabel.setManaged(true);
                 activityTextArea.setVisible(true);
@@ -142,13 +152,12 @@ public class MainPane extends GridPane {
                     checkField(representationTextField) &&
                     checkCheckBoxes()) {
                 try {
-                    if(changeActivityCheckBox.isSelected())
+                    if (changeActivityCheckBox.isSelected())
                         new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
-                                 representationTextField.getText(), activityTextArea.getText(),
+                                representationTextField.getText(), activityTextArea.getText(),
                                 inWaitCheckBox.isSelected()).startWork();
-                    else
-                        new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
-                                representationTextField.getText()).startWork();
+                    else new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
+                            representationTextField.getText()).startWork();
                 } catch (LoginException e1) {
                     failToLoginMessage();
                 }
