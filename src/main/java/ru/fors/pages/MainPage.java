@@ -1,6 +1,7 @@
 package ru.fors.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
@@ -54,7 +55,11 @@ public class MainPage extends Page {
 
     public void userClickSearchScript() {
         click(searchScript);
-        waitUntilFrameToBeAvaibleAndSwitchToIt(1);
+        try {
+            waitUntilFrameToBeAvaibleAndSwitchToIt(1);
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
         waitUntilElementPresent(saveButton);
     }
 
@@ -86,7 +91,7 @@ public class MainPage extends Page {
         click(comboUpSolveButton);
     }
 
-    private void userClickComboUpClosureCodeButton(){
+    private void userClickComboUpClosureCodeButton() {
         click(comboUpClosureCodeButton);
     }
 
@@ -102,7 +107,7 @@ public class MainPage extends Page {
         click(permanentStatus);
     }
 
-    private void userClickSolvedOnSecondLine(){
+    private void userClickSolvedOnSecondLine() {
         click(solvedOnSecondLine);
     }
 
