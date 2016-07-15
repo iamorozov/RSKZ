@@ -31,6 +31,7 @@ public class MainPane extends GridPane {
     private final RadioButton workingWithActivitiesRadioButton = new RadioButton("Работа с инцидентами");
     private final TextArea solutionTextArea = new TextArea();
     private final Label closeLabel = new LabelWithStyle("Текст решения: ");
+    private Text errorMessage;
 
     private final String RED_BORDER = "-fx-border-color: red";
     private final String INHERIT_BORDER = "-fx-border-color: inherit";
@@ -59,12 +60,20 @@ public class MainPane extends GridPane {
         }
     }
 
-    public void failToLoginMessage() {
-        Text text1 = new Text("Ошибка аутентификации");
-        text1.setFill(Color.RED);
-        add(text1, 0, (this.getChildren().size() - 1) / 2 + 1);
-        setColumnSpan(text1, 2);
-        setHalignment(text1, HPos.CENTER);
+    private void failToLoginMessage() {
+        showError("Ошибка аутентификации");
+    }
+
+    private void driverNotFound() {
+        showError("Не удалось запустить Chrome");
+    }
+
+    private void showError(String text){
+        errorMessage = new Text(text);
+        errorMessage.setFill(Color.RED);
+        add(errorMessage, 0, (this.getChildren().size() - 1) / 2);
+        setColumnSpan(errorMessage, 2);
+        setHalignment(errorMessage, HPos.CENTER);
     }
 
     private void fillSecondColumn() {
@@ -201,12 +210,36 @@ public class MainPane extends GridPane {
         File selectedFile = fileChooser.showOpenDialog(getScene().getWindow());
         if (selectedFile != null)
             try {
-                User.decode(selectedFile.getPath()).startWork();
+                User user = User.decode(selectedFile.getPath());
+                fillFields(user);
+                user.startWork();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-            } catch (LoginException e){
+            } catch (LoginException e) {
                 failToLoginMessage();
+            } catch (IllegalStateException e){
+                driverNotFound();
             }
+    }
+
+    private void fillFields(User user) {
+        usernameTextField.setText(user.getUsername());
+        passwordField.setText(user.getPassword());
+        chromeDriverPath.setText(user.getDriverPath());
+        representationTextField.setText(user.getRepresentation());
+        if (user.isDoChangeActivity()) {
+            changeActivityCheckBox.setSelected(true);
+            activityTextArea.setText(user.getActivity());
+            workingWithActivitiesRadioButton.fire();
+        }
+        if (user.isDoChangeStatus()) {
+            inWaitCheckBox.setSelected(true);
+            workingWithActivitiesRadioButton.fire();
+        }
+        if (user.isDoChangeStatusToSolve()) {
+            solutionTextArea.setText(user.getSolution());
+            closeIncidentRadioButton.fire();
+        }
     }
 
     private void saveButton() {
@@ -228,6 +261,9 @@ public class MainPane extends GridPane {
         User user = getUser();
         if (user != null) {
             try {
+                if(errorMessage != null){
+                    errorMessage.setText("");
+                }
                 user.startWork();
             } catch (LoginException e) {
                 failToLoginMessage();
