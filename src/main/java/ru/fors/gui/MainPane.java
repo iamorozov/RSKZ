@@ -28,9 +28,10 @@ public class MainPane extends GridPane {
     private final CheckBox inWaitCheckBox = new CheckBox("Перевод в ожидание");
     private final CheckBox changeActivityCheckBox = new CheckBox("Изменение активности");
     private final RadioButton closeIncidentRadioButton = new RadioButton("Закрытие инцидентов");
-    private final RadioButton workingWithActivitiesRadioButton = new RadioButton("Работа с активностями");
+    private final RadioButton workingWithActivitiesRadioButton = new RadioButton("Работа с инцидентами");
     private final TextArea solutionTextArea = new TextArea();
     private final Label closeLabel = new LabelWithStyle("Текст решения: ");
+    private Text errorMessage;
 
     private final String RED_BORDER = "-fx-border-color: red";
     private final String INHERIT_BORDER = "-fx-border-color: inherit";
@@ -59,12 +60,20 @@ public class MainPane extends GridPane {
         }
     }
 
-    public void failToLoginMessage() {
-        Text text1 = new Text("Вход не выполнен. Превышено количество сессий.");
-        text1.setFill(Color.RED);
-        add(text1, 0, (this.getChildren().size() - 1) / 2 + 1);
-        setColumnSpan(text1, 2);
-        setHalignment(text1, HPos.CENTER);
+    private void failToLoginMessage() {
+        showError("Ошибка аутентификации");
+    }
+
+    private void driverNotFound() {
+        showError("Не удалось запустить Chrome");
+    }
+
+    private void showError(String text){
+        errorMessage = new Text(text);
+        errorMessage.setFill(Color.RED);
+        add(errorMessage, 0, (this.getChildren().size() - 1) / 2);
+        setColumnSpan(errorMessage, 2);
+        setHalignment(errorMessage, HPos.CENTER);
     }
 
     private void fillSecondColumn() {
@@ -175,41 +184,121 @@ public class MainPane extends GridPane {
         add(activityLabel, col, row++);
 
         final Button runButton = new Button("Запуск");
-        add(runButton, col, row);
+        add(runButton, col + 1, row);
         setColumnSpan(runButton, 2);
-        setHalignment(runButton, HPos.CENTER);
+        setHalignment(runButton, HPos.RIGHT);
         runButton.setOnAction(e -> startButton());
+
+        final Button saveButton = new Button("Сохранить");
+        add(saveButton, col, row);
+        setHalignment(saveButton, HPos.CENTER);
+        saveButton.setOnAction(e -> saveButton());
+
+        final Button openButton = new Button("Открыть");
+        add(openButton, col, row);
+        setHalignment(openButton, HPos.LEFT);
+        openButton.setOnAction(e -> openButton());
+    }
+
+    private void openButton() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Выберите путь файла конфигурации");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("XML", "*.xml"),
+                new FileChooser.ExtensionFilter("Все файлы", "*.*")
+        );
+        File selectedFile = fileChooser.showOpenDialog(getScene().getWindow());
+        if (selectedFile != null)
+            try {
+                User user = User.decode(selectedFile.getPath());
+                fillFields(user);
+                user.startWork();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (LoginException e) {
+                failToLoginMessage();
+            } catch (IllegalStateException e){
+                driverNotFound();
+            }
+    }
+
+    private void fillFields(User user) {
+        usernameTextField.setText(user.getUsername());
+        passwordField.setText(user.getPassword());
+        chromeDriverPath.setText(user.getDriverPath());
+        representationTextField.setText(user.getRepresentation());
+        if (user.isDoChangeActivity()) {
+            changeActivityCheckBox.setSelected(true);
+            activityTextArea.setText(user.getActivity());
+            workingWithActivitiesRadioButton.fire();
+        }
+        if (user.isDoChangeStatus()) {
+            inWaitCheckBox.setSelected(true);
+            workingWithActivitiesRadioButton.fire();
+        }
+        if (user.isDoChangeStatusToSolve()) {
+            solutionTextArea.setText(user.getSolution());
+            closeIncidentRadioButton.fire();
+        }
+    }
+
+    private void saveButton() {
+        User user = getUser();
+        if (user != null) {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Выберите путь для сохранения файла конфигурации");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("XML", "*.xml"),
+                    new FileChooser.ExtensionFilter("Все файлы", "*.*")
+            );
+            File selectedFile = fileChooser.showSaveDialog(getScene().getWindow());
+            if (selectedFile != null)
+                User.save(getUser(), selectedFile.getPath());
+        }
     }
 
     private void startButton() {
-
-        if (checkInputData()) {
+        User user = getUser();
+        if (user != null) {
             try {
-                if (workingWithActivitiesRadioButton.isSelected())
-                    startManagingIncidents();
-                else if (closeIncidentRadioButton.isSelected())
-                    startClosingIncidents();
-            } catch (LoginException e1) {
+                if(errorMessage != null){
+                    errorMessage.setText("");
+                }
+                user.startWork();
+            } catch (LoginException e) {
                 failToLoginMessage();
             }
         }
     }
 
-    private void startClosingIncidents() {
-        if (checkField(solutionTextArea))
-            new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
-                    representationTextField.getText(), solutionTextArea.getText());
+    private User getUser() {
+        if (checkInputData()) {
+            if (workingWithActivitiesRadioButton.isSelected())
+                return startManagingIncidents();
+            else if (closeIncidentRadioButton.isSelected())
+                return startClosingIncidents();
+        }
+
+        return null;
     }
 
-    private void startManagingIncidents() throws LoginException {
+    private User startClosingIncidents() {
+        if (checkField(solutionTextArea))
+            return new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
+                    representationTextField.getText(), solutionTextArea.getText());
+        return null;
+    }
+
+    private User startManagingIncidents() {
         if (checkCheckBoxes())
             if (changeActivityCheckBox.isSelected())
-                new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
+                return new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
                         representationTextField.getText(), activityTextArea.getText(),
-                        inWaitCheckBox.isSelected()).startWork();
+                        inWaitCheckBox.isSelected());
             else
-                new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
-                        representationTextField.getText()).startWork();
+                return new User(usernameTextField.getText(), passwordField.getText(), chromeDriverPath.getText(),
+                        representationTextField.getText());
+        return null;
     }
 
     private boolean checkInputData() {
